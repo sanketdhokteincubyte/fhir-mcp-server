@@ -14,6 +14,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import base64
 import logging
 import secrets
 import time
@@ -99,13 +100,18 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
             **({"scope": " ".join(params.scopes)} if params.scopes else {}),
         }
 
+        mcp_callback_url = str(
+            self.configs.callback_url(self.configs.effective_server_url)
+        )
+        logger.info(f"MCP Server effective_server_url: {self.configs.effective_server_url}")
+        logger.info(f"MCP Server callback URL for FHIR authorization: {mcp_callback_url}")
+
         auth_params: Dict[str, str] = {
             "response_type": "code",
             "scope": self.configs.server_scopes,
             "client_id": self.configs.server_client_id,
-            "redirect_uri": str(
-                self.configs.callback_url(self.configs.effective_server_url)
-            ),
+            "redirect_uri": mcp_callback_url,
+            "aud": self.configs.server_base_url,
             "state": state,
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
@@ -170,24 +176,42 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
         if client.client_id != authorization_code.client_id:
             raise ValueError("Client authentication failed")
 
+        mcp_callback_url = str(
+            self.configs.callback_url(self.configs.effective_server_url)
+        )
+        logger.info(f"Token exchange - MCP Server effective_server_url: {self.configs.effective_server_url}")
+        logger.info(f"Token exchange - Using redirect_uri: {mcp_callback_url}")
+        logger.info(f"Token exchange - Using client_id: {self.configs.server_client_id}")
+        logger.info(f"Token exchange - Using code: {authorization_code.code[:20]}...")
+
+        # ECW Cloud requires Basic Authentication (base64 encoded client_id:client_secret)
+        # as per their documentation for Confidential Apps
+        credentials = f"{self.configs.server_client_id}:{self.configs.server_client_secret}"
+        basic_auth = base64.b64encode(credentials.encode()).decode()
+        logger.info(f"Token exchange - Using Basic Auth: Basic {basic_auth[:20]}...")
+
         access_token_payload: Dict = {
             "grant_type": "authorization_code",
             "code": authorization_code.code,
             "code_verifier": authorization_code.code_verifier,
-            "client_id": self.configs.server_client_id,
-            "client_secret": self.configs.server_client_secret,
-            "redirect_uri": self.configs.callback_url(self.configs.effective_server_url),
+            "redirect_uri": mcp_callback_url,
         }
 
         token: OAuth2Token = await perform_token_flow(
             url=await self._get_token_endpoint(),
             data=access_token_payload,
-            headers={"Accept": "application/json"},
+            headers={
+                "Accept": "application/json",
+                "Authorization": f"Basic {basic_auth}",
+            },
         )
 
         # Generate MCP tokens
         mcp_access_token: str = f"fhir_mcp_{secrets.token_hex(32)}"
         mcp_refresh_token: str = f"fhir_mcp_{secrets.token_hex(32)}"
+
+        logger.info(f"Storing MCP access token: {mcp_access_token[:20]}...")
+        logger.info(f"Mapped to FHIR access token: {token.access_token[:20]}...")
 
         self.token_mapping[mcp_access_token] = AccessToken(
             token=token.access_token,
@@ -206,6 +230,8 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
 
         self.token_metadata_mapping[token.access_token] = token
 
+        logger.info(f"Token mapping now has {len(self.token_mapping)} tokens")
+
         return OAuthToken(
             access_token=mcp_access_token,
             refresh_token=mcp_refresh_token,
@@ -216,13 +242,20 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
 
     async def load_access_token(self, token: str) -> AccessToken | None:
         """Load and validate an access token."""
+        logger.debug(f"Loading access token: {token[:20]}...")
+        logger.debug(f"Token mapping has {len(self.token_mapping)} tokens")
+
         access_token: AccessToken | RefreshToken | None = self.token_mapping.get(token)
         if not access_token:
+            logger.warning(f"Access token not found in mapping: {token[:20]}...")
             return None
         if access_token.expires_at and access_token.expires_at < time.time():
+            logger.warning(f"Access token expired: {token[:20]}...")
             return None
         if isinstance(access_token, AccessToken):
+            logger.debug(f"Access token loaded successfully: {token[:20]}...")
             return access_token
+        logger.warning(f"Token is not an AccessToken: {token[:20]}...")
         return None
 
     async def load_refresh_token(
@@ -251,17 +284,22 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
         if refresh_token.client_id != client.client_id:
             raise ValueError("Client authentication failed")
 
+        # ECW Cloud requires Basic Authentication for refresh token as well
+        credentials = f"{self.configs.server_client_id}:{self.configs.server_client_secret}"
+        basic_auth = base64.b64encode(credentials.encode()).decode()
+
         refresh_token_payload: Dict = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
-            "client_id": self.configs.server_client_id,
-            "client_secret": self.configs.server_client_secret,
             "scopes": " ".join(scopes),
         }
         new_token: OAuth2Token = await perform_token_flow(
             url=await self._get_token_endpoint(),
             data=refresh_token_payload,
-            headers={"Accept": "application/json"},
+            headers={
+                "Accept": "application/json",
+                "Authorization": f"Basic {basic_auth}",
+            },
         )
 
         # Generate new MCP tokens

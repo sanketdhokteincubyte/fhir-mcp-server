@@ -1,0 +1,114 @@
+WARNING:  Invalid HTTP request received.
+WARNING:  Invalid HTTP request received.
+INFO:     ::1:54708 - "GET /oauth/callback?code=xF_mKtiCY1dwmrFgrcvZ7Qd_7wN_JczDeao8t_H7o1PEi_qdLCVJuNEVOqmNhflrTHBWxsTkHC_gp2oULIh4fL1sLnrd8g7DxZ7x7O1wUxpmPMPeUnGwKqb-HAj_25Uc&state=3df45128-6362-46b8-8398-14588d3b3fe9 HTTP/1.1" 302 Found
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_start with no data
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_name with data[0:10]
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_data with data[11:29]
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_end with no data
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_start with no data
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_name with data[30:34]
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_data with data[35:76]
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_end with no data
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_start with no data
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_name with data[77:86]
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_data with data[87:132]
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_end with no data
+[2025-12-13 05:49:12,444] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_start with no data
+[2025-12-13 05:49:12,451] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_name with data[133:145]
+[2025-12-13 05:49:12,451] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_data with data[146:207]
+[2025-12-13 05:49:12,451] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_end with no data
+[2025-12-13 05:49:12,451] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_start with no data
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_name with data[208:221]
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_data with data[222:265]
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_end with no data
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_start with no data
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_name with data[266:279]
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:625} - Calling on_field_data with data[280:344]
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:628} - Calling on_field_end with no data
+[2025-12-13 05:49:12,452] DEBUG {python_multipart.multipart.callback:628} - Calling on_end with no data
+[2025-12-13 05:49:12,452] INFO {fhir_mcp_server.oauth.server_provider.exchange_authorization_code:181} - Token exchange - MCP Server effective_server_url: http://localhost:8000
+[2025-12-13 05:49:12,452] INFO {fhir_mcp_server.oauth.server_provider.exchange_authorization_code:182} - Token exchange - Using redirect_uri: http://localhost:8000/oauth/callback
+[2025-12-13 05:49:12,456] INFO {fhir_mcp_server.oauth.server_provider.exchange_authorization_code:183} - Token exchange - Using client_id: YtcHWZdmDzyltJNcTFGci8UONC3Wz8OWoQy6hUiM3DM
+[2025-12-13 05:49:12,456] INFO {fhir_mcp_server.oauth.server_provider.exchange_authorization_code:184} - Token exchange - Using code: xF_mKtiCY1dwmrFgrcvZ...
+[2025-12-13 05:49:14,427] DEBUG {httpcore.connection.atrace:87} - connect_tcp.started host='staging-oauthserver.ecwcloud.com' port=443 local_address=None timeout=30.0 socket_options=None
+[2025-12-13 05:49:14,724] DEBUG {httpcore.connection.atrace:87} - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x00000224C9B5AF30>
+[2025-12-13 05:49:14,732] DEBUG {httpcore.connection.atrace:87} - start_tls.started ssl_context=<ssl.SSLContext object at 0x00000224C9D5ACD0> server_hostname='staging-oauthserver.ecwcloud.com' timeout=30.0
+[2025-12-13 05:49:15,170] DEBUG {httpcore.connection.atrace:87} - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x00000224C9DADC40>
+[2025-12-13 05:49:15,196] DEBUG {httpcore.http11.atrace:87} - send_request_headers.started request=<Request [b'POST']>
+[2025-12-13 05:49:15,221] DEBUG {httpcore.http11.atrace:87} - send_request_headers.complete
+[2025-12-13 05:49:15,254] DEBUG {httpcore.http11.atrace:87} - send_request_body.started request=<Request [b'POST']>
+[2025-12-13 05:49:15,272] DEBUG {httpcore.http11.atrace:87} - send_request_body.complete
+[2025-12-13 05:49:15,288] DEBUG {httpcore.http11.atrace:87} - receive_response_headers.started request=<Request [b'POST']>
+[2025-12-13 05:49:15,809] DEBUG {httpcore.http11.atrace:87} - receive_response_headers.complete return_value=(b'HTTP/1.1', 401, b'', [(b'Date', b'Sat, 13 Dec 2025 00:19:15 GMT'), (b'Content-Type', b'application/json;charset=UTF-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Set-Cookie', b'ApplicationGatewayAffinityCORS=35242eb34eacd6a3467b4dc2f4871982; Path=/; SameSite=None; Secure'), (b'Set-Cookie', b'ApplicationGatewayAffinity=35242eb34eacd6a3467b4dc2f4871982; Path=/'), (b'set-cookie', b'JSESSIONID=AB34547532C7F69393F79FE34E0F1E4F; Path=/oauth; HttpOnly'), (b'x-content-type-options', b'nosniff'), (b'x-xss-protection', b'1; mode=block'), (b'cache-control', b'no-cache, no-store, max-age=0, must-revalidate'), (b'pragma', b'no-cache'), (b'expires', b'0'), (b'content-security-policy', b"frame-ancestors 'self' https://*.eclinicalweb.com/ https://*.ecwcloud.in/ https://*.ecwcloud.com/ https://*.healow.com/ https://*.ecwlab.com/"), (b'permissions-policy', b'geolocation=(), midi=(), notifications=(), push=(), sync-xhr=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), speaker=(), vibrate=(), fullscreen=(), payment=()'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains'), (b'x-frame-options', b'DENY'), (b'referrer-policy', b'strict-origin-when-cross-origin'), (b'vary', b'accept-encoding'), (b'content-encoding', b'gzip'), (b'server', b'')])
+[2025-12-13 05:49:15,819] INFO {httpx._send_single_request:1740} - HTTP Request: POST https://staging-oauthserver.ecwcloud.com/oauth/oauth2/token "HTTP/1.1 401 "
+[2025-12-13 05:49:15,863] DEBUG {httpcore.http11.atrace:87} - receive_response_body.started request=<Request [b'POST']>
+[2025-12-13 05:49:15,894] DEBUG {httpcore.http11.atrace:87} - receive_response_body.complete
+[2025-12-13 05:49:15,929] DEBUG {httpcore.http11.atrace:87} - response_closed.started
+[2025-12-13 05:49:15,952] DEBUG {httpcore.http11.atrace:87} - response_closed.complete
+[2025-12-13 05:49:15,994] DEBUG {fhir_mcp_server.oauth.common.perform_token_flow:125} - Token endpoint response: 401 - {"error":"invalid_client"}
+[2025-12-13 05:49:16,024] ERROR {fhir_mcp_server.oauth.common.perform_token_flow:130} - Token call failed with status: 401: {"error":"invalid_client"}
+[2025-12-13 05:49:16,068] DEBUG {httpcore.connection.atrace:87} - close.started
+[2025-12-13 05:49:16,096] DEBUG {httpcore.connection.atrace:87} - close.complete
+[2025-12-13 05:49:16,124] ERROR {fhir_mcp_server.oauth.common.perform_token_flow:148} - Unable to invoke the token endpoint. Caused by,
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\src\fhir_mcp_server\oauth\common.py", line 133, in perform_token_flow
+    raise ValueError(f"Token endpoint call failed")
+ValueError: Token endpoint call failed
+INFO:     ::1:52999 - "POST /token HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\src\fhir_mcp_server\oauth\common.py", line 133, in perform_token_flow
+    raise ValueError(f"Token endpoint call failed")
+ValueError: Token endpoint call failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 403, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\middleware\errors.py", line 187, in __call__
+    raise exc
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\middleware\errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\middleware\authentication.py", line 48, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\mcp\server\auth\middleware\auth_context.py", line 54, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\starlette\routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\.venv\Lib\site-packages\mcp\server\auth\handlers\token.py", line 196, in handle
+    tokens = await self.provider.exchange_authorization_code(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\src\fhir_mcp_server\oauth\server_provider.py", line 195, in exchange_authorization_code
+    token: OAuth2Token = await perform_token_flow(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\GitHub\fhir-mcp-server\src\fhir_mcp_server\oauth\common.py", line 151, in perform_token_flow
+    raise ValueError("Token endpoint call failed")
+ValueError: Token endpoint call failed
