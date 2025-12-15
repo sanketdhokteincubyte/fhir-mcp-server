@@ -51,6 +51,7 @@ class ServerConfigs(BaseSettings):
     server_disable_authorization: bool = False
     server_include_aud: bool = False
     server_enable_basic_auth: bool = False
+    server_exclude_search_params: str = ""
 
     def callback_url(
         self, server_url: str, suffix: str = "/oauth/callback"
@@ -75,6 +76,17 @@ class ServerConfigs(BaseSettings):
                 if scope.strip()
             ]
         return [self.server_scopes]
+
+    @property
+    def excluded_search_params(self) -> list[str]:
+        """Get list of search parameters to exclude from FHIR requests."""
+        if isinstance(self.server_exclude_search_params, str):
+            return [
+                param.strip()
+                for param in self.server_exclude_search_params.split(",")
+                if param.strip()
+            ]
+        return []
 
     @property
     def effective_server_url(self) -> str:
