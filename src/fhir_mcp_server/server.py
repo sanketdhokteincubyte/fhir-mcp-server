@@ -285,11 +285,22 @@ def register_mcp_tools(mcp: FastMCP) -> None:
                 )
                 return await get_operation_outcome_required_error("type")
 
+            # Filter out excluded search parameters for non-standard FHIR servers (e.g., ECW)
+            excluded_params = configs.excluded_search_params
+            if excluded_params:
+                filtered_params = {
+                    k: v for k, v in searchParam.items()
+                    if k not in excluded_params
+                }
+                if filtered_params != searchParam:
+                    logger.debug(f"Filtered out excluded parameters. Original: {searchParam}, Filtered: {filtered_params}")
+                searchParam = filtered_params
+
             client: AsyncFHIRClient = await get_async_fhir_client()
             async_resources: list[Any] = (
                 await client.resources(type).search(Raw(**searchParam)).fetch_raw()
             )
-            logger.debug("Async resources fetched:", async_resources) 
+            logger.debug("Async resources fetched:", async_resources)
             return async_resources
         except ValueError as ex:
             logger.exception(

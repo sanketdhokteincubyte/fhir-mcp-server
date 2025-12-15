@@ -51,7 +51,12 @@ services:
       # Optional: Use Basic auth for token exchange
       - key: FHIR_SERVER_ENABLE_BASIC_AUTH
         value: True
-      
+
+      # Optional: Exclude search parameters for non-standard FHIR servers
+      # For ECW Cloud, use: "_count,_sort,page"
+      - key: FHIR_SERVER_EXCLUDE_SEARCH_PARAMS
+        value: "_count,_sort,page"
+
       # Optional: Custom server URL (overrides host:port)
       # - key: FHIR_MCP_SERVER_URL
       #   sync: false
