@@ -2,7 +2,7 @@ services:
   - type: web
     name: fhir-mcp-server
     runtime: docker
-    plan: starter
+    plan: free
     region: oregon
     branch: main
     dockerfilePath: ./Dockerfile
