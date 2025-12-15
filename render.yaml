@@ -55,10 +55,7 @@ services:
       # Optional: Custom server URL (overrides host:port)
       # - key: FHIR_MCP_SERVER_URL
       #   sync: false
-    
-    # Health check configuration
-    healthCheckPath: /
-    
+
     # Auto-deploy on push to main branch
     autoDeploy: true
 
