@@ -14,6 +14,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import base64
 import logging
 import secrets
 import time
@@ -111,6 +112,11 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
             "code_challenge_method": "S256",
         }
 
+        # Add aud parameter if enabled
+        # This is required for some FHIR servers (e.g., ECW Cloud)
+        if self.configs.server_include_aud:
+            auth_params["aud"] = self.configs.server_base_url
+
         auth_url: str = f"{authorization_endpoint}?{urlencode(auth_params)}"
         logger.debug(f"Redirecting the request to authorization URL: {auth_url}")
         return auth_url
@@ -169,20 +175,30 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
         """Exchange authorization code for tokens."""
         if client.client_id != authorization_code.client_id:
             raise ValueError("Client authentication failed")
+        
+        access_token_headers: Dict[str, str] = {"Accept": "application/json"}
+        # Use Basic Auth if enabled
+        # Some FHIR servers (e.g., ECW Cloud) require Basic Auth for token exchange
+        if self.configs.server_enable_basic_auth:
+            credentials = f"{self.configs.server_client_id}:{self.configs.server_client_secret}"
+            basic_auth = base64.b64encode(credentials.encode()).decode()
+            access_token_headers["Authorization"] = f"Basic {basic_auth}"
 
         access_token_payload: Dict = {
             "grant_type": "authorization_code",
             "code": authorization_code.code,
             "code_verifier": authorization_code.code_verifier,
-            "client_id": self.configs.server_client_id,
-            "client_secret": self.configs.server_client_secret,
             "redirect_uri": self.configs.callback_url(self.configs.effective_server_url),
         }
+
+        if not self.configs.server_enable_basic_auth:
+            access_token_payload["client_id"] = self.configs.server_client_id
+            access_token_payload["client_secret"] = self.configs.server_client_secret
 
         token: OAuth2Token = await perform_token_flow(
             url=await self._get_token_endpoint(),
             data=access_token_payload,
-            headers={"Accept": "application/json"},
+            headers=access_token_headers,
         )
 
         # Generate MCP tokens
@@ -251,17 +267,28 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
         if refresh_token.client_id != client.client_id:
             raise ValueError("Client authentication failed")
 
+        refresh_token_headers: Dict[str, str] = {"Accept": "application/json"}
+        # Use Basic Auth if enabled
+        # Some FHIR servers (e.g., ECW Cloud) require Basic Auth for token exchange
+        if self.configs.server_enable_basic_auth:
+            credentials = f"{self.configs.server_client_id}:{self.configs.server_client_secret}"
+            basic_auth = base64.b64encode(credentials.encode()).decode()
+            refresh_token_headers["Authorization"] = f"Basic {basic_auth}"
+
         refresh_token_payload: Dict = {
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
-            "client_id": self.configs.server_client_id,
-            "client_secret": self.configs.server_client_secret,
             "scopes": " ".join(scopes),
         }
+
+        if not self.configs.server_enable_basic_auth:
+            refresh_token_payload["client_id"] = self.configs.server_client_id
+            refresh_token_payload["client_secret"] = self.configs.server_client_secret
+
         new_token: OAuth2Token = await perform_token_flow(
             url=await self._get_token_endpoint(),
             data=refresh_token_payload,
-            headers={"Accept": "application/json"},
+            headers=refresh_token_headers,
         )
 
         # Generate new MCP tokens
