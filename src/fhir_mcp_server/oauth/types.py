@@ -49,6 +49,8 @@ class ServerConfigs(BaseSettings):
     server_base_url: str = ""
     server_access_token: str | None = None
     server_disable_authorization: bool = False
+    server_include_aud: bool = False
+    server_enable_basic_auth: bool = False
 
     def callback_url(
         self, server_url: str, suffix: str = "/oauth/callback"

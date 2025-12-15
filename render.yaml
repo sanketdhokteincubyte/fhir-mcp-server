@@ -38,7 +38,7 @@ services:
         sync: false
       
       - key: FHIR_SERVER_SCOPES
-        value: "fhirUser openid"
+        value: "user/DocumentReference.read patient/DiagnosticReport.read user/DiagnosticReport.read user/Media.read patient/AllergyIntolerance.read patient/Patient.read patient/Immunization.read user/MedicationDispense.read patient/CareTeam.read user/Patient.read user/Procedure.read user/Organization.read user/Device.read user/Binary.read patient/Device.read user/QuestionnaireResponse.read patient/MedicationAdministration.read patient/Medication.read user/Coverage.read patient/MedicationDispense.read patient/Encounter.read user/Location.read user/Practitioner.read patient/Binary.read user/Medication.read patient/Condition.read patient/MedicationRequest.read patient/Media.read patient/ServiceRequest.read user/PractitionerRole.read patient/Location.read user/CareTeam.read patient/DocumentReference.read patient/QuestionnaireResponse.read patient/Coverage.read user/AllergyIntolerance.read patient/Organization.read user/RelatedPerson.read user/Immunization.read patient/Goal.read patient/Practitioner.read user/Condition.read user/Encounter.read patient/Provenance.read patient/Specimen.read user/MedicationRequest.read patient/PractitionerRole.read patient/Procedure.read user/Provenance.read user/Observation.read user/Specimen.read user/MedicationAdministration.read user/CarePlan.read patient/CarePlan.read user/ServiceRequest.read patient/Observation.read patient/RelatedPerson.read user/Goal.read"
       
       # Optional: Direct access token (skips authorization flow)
       # - key: FHIR_SERVER_ACCESS_TOKEN
@@ -46,11 +46,11 @@ services:
       
       # Optional: Include 'aud' parameter in authorization request
       - key: FHIR_SERVER_INCLUDE_AUD
-        value: False
+        value: True
       
       # Optional: Use Basic auth for token exchange
       - key: FHIR_SERVER_ENABLE_BASIC_AUTH
-        value: False
+        value: True
       
       # Optional: Custom server URL (overrides host:port)
       # - key: FHIR_MCP_SERVER_URL
