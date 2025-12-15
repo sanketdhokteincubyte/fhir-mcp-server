@@ -1,0 +1,64 @@
+services:
+  - type: web
+    name: fhir-mcp-server
+    runtime: docker
+    plan: starter
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    # Environment variables
+    envVars:
+      # MCP Server Configuration
+      - key: FHIR_MCP_HOST
+        value: 0.0.0.0
+      
+      - key: FHIR_MCP_PORT
+        value: 8000
+      
+      - key: FHIR_MCP_REQUEST_TIMEOUT
+        value: 30
+      
+      # FHIR Server Configuration (Required)
+      - key: FHIR_SERVER_BASE_URL
+        sync: false
+        # Set this in Render Dashboard or use generateValue: true for secrets
+        # Example: https://hapi.fhir.org/baseR5
+      
+      # Optional: Set to True to disable authorization
+      - key: FHIR_SERVER_DISABLE_AUTHORIZATION
+        value: False
+      
+      # For Authenticated FHIR servers (Optional)
+      - key: FHIR_SERVER_CLIENT_ID
+        sync: false
+      
+      - key: FHIR_SERVER_CLIENT_SECRET
+        sync: false
+      
+      - key: FHIR_SERVER_SCOPES
+        value: "fhirUser openid"
+      
+      # Optional: Direct access token (skips authorization flow)
+      # - key: FHIR_SERVER_ACCESS_TOKEN
+      #   sync: false
+      
+      # Optional: Include 'aud' parameter in authorization request
+      - key: FHIR_SERVER_INCLUDE_AUD
+        value: False
+      
+      # Optional: Use Basic auth for token exchange
+      - key: FHIR_SERVER_ENABLE_BASIC_AUTH
+        value: False
+      
+      # Optional: Custom server URL (overrides host:port)
+      # - key: FHIR_MCP_SERVER_URL
+      #   sync: false
+    
+    # Health check configuration
+    healthCheckPath: /
+    
+    # Auto-deploy on push to main branch
+    autoDeploy: true
+
