@@ -33,17 +33,23 @@ async def on_request_start(session, trace_config_ctx, params):
     logger.info(f"  URL: {params.url}")
     logger.info(f"  Method: {params.method}")
 
-    headers = dict(params.headers)
-    logger.info(f"  Headers: {json.dumps(headers, indent=2)}")
+    try:
+        # Convert headers to dict and ensure all values are strings
+        headers = {k: str(v) for k, v in dict(params.headers).items()}
+        logger.info(f"  Headers: {json.dumps(headers, indent=2)}")
+    except Exception as e:
+        logger.info(f"  Headers: <error serializing headers: {e}>")
 
     if params.data:
         try:
             if isinstance(params.data, (dict, list)):
-                logger.info(f"  Body: {json.dumps(params.data, indent=2)}")
+                # Ensure all values in dict/list are JSON serializable
+                serializable_data = json.loads(json.dumps(params.data, default=str))
+                logger.info(f"  Body: {json.dumps(serializable_data, indent=2)}")
             else:
-                logger.info(f"  Body: {params.data}")
-        except Exception:
-            logger.info("  Body: <binary or non-serializable data>")
+                logger.info(f"  Body: {str(params.data)}")
+        except Exception as e:
+            logger.info(f"  Body: <error serializing body: {e}>")
 
 
 async def on_request_end(session, trace_config_ctx, params):

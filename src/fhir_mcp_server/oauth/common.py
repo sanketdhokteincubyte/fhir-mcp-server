@@ -130,7 +130,10 @@ async def perform_token_flow(
         logger.info(f"  URL: {url}")
         logger.info(f"  Method: POST")
         logger.info(f"  Headers: {json.dumps(headers, indent=2)}")
-        logger.info(f"  Payload: {json.dumps(data, indent=2)}")
+
+        # Convert all values to strings for JSON serialization
+        serializable_data = {k: str(v) for k, v in data.items()}
+        logger.info(f"  Payload: {json.dumps(serializable_data, indent=2)}")
 
         async with create_mcp_http_client() as client:
             response: Response = await client.post(
