@@ -269,6 +269,12 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
         scopes: list[str],
     ) -> OAuthToken:
         """Exchange refresh token"""
+        logger.info(f"Exchanging refresh token")
+        logger.info(f"  Client ID: {client.client_id}")
+        logger.info(f"  Refresh Token: {refresh_token}")
+        logger.info(f"  Scopes: {scopes}")
+        logger.info(f"  Token Mapping: {self.token_mapping}")
+        logger.info(f"  Self Config: {self.configs}")
         if refresh_token.client_id != client.client_id:
             raise ValueError("Client authentication failed")
 
@@ -290,6 +296,9 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
             refresh_token_payload["client_id"] = self.configs.server_client_id
             refresh_token_payload["client_secret"] = self.configs.server_client_secret
 
+
+        logger.info(f"  Refresh Token Payload: {refresh_token_payload}")
+        logger.info(f"  Refresh Token Headers: {refresh_token_headers}")
         new_token: OAuth2Token = await perform_token_flow(
             url=await self._get_token_endpoint(),
             data=refresh_token_payload,
