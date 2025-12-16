@@ -118,6 +118,11 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
             auth_params["aud"] = self.configs.server_base_url
 
         auth_url: str = f"{authorization_endpoint}?{urlencode(auth_params)}"
+
+        logger.info("[FHIR REQUEST] Authorization URL generation")
+        logger.info(f"  Authorization Endpoint: {authorization_endpoint}")
+        logger.info(f"  Parameters: {auth_params}")
+        logger.info(f"  Full URL: {auth_url}")
         logger.debug(f"Redirecting the request to authorization URL: {auth_url}")
         return auth_url
 

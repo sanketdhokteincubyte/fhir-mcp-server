@@ -21,8 +21,9 @@ import secrets
 import string
 import hashlib
 import base64
+import json
 
-from typing import Dict
+from typing import Dict, Any
 from httpx import Response
 
 
@@ -42,7 +43,16 @@ async def discover_oauth_metadata(
 
     async with create_mcp_http_client() as client:
         try:
+            logger.info(f"[FHIR REQUEST] Discovering OAuth metadata")
+            logger.info(f"  URL: {metadata_url}")
+            logger.info(f"  Method: GET")
+            logger.info(f"  Headers: {json.dumps(headers, indent=2)}")
+
             response = await client.get(url=metadata_url, headers=headers)
+
+            logger.info(f"[FHIR RESPONSE] OAuth metadata discovery")
+            logger.info(f"  Status: {response.status_code}")
+
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -115,6 +125,13 @@ async def perform_token_flow(
     timeout: float = 30.0,
 ) -> OAuthToken:
     try:
+        grant_type = data.get("grant_type", "unknown")
+        logger.info(f"[FHIR REQUEST] Token endpoint - {grant_type}")
+        logger.info(f"  URL: {url}")
+        logger.info(f"  Method: POST")
+        logger.info(f"  Headers: {json.dumps(headers, indent=2)}")
+        logger.info(f"  Payload: {json.dumps(data, indent=2)}")
+
         async with create_mcp_http_client() as client:
             response: Response = await client.post(
                 url=url,
@@ -122,6 +139,9 @@ async def perform_token_flow(
                 headers=headers,
                 timeout=timeout,
             )
+
+            logger.info(f"[FHIR RESPONSE] Token endpoint - {grant_type}")
+            logger.info(f"  Status: {response.status_code}")
             logger.debug(
                 f"Token endpoint response: {response.status_code} - {response.text}"
             )
@@ -130,7 +150,7 @@ async def perform_token_flow(
                 logger.error(
                     f"Token call failed with status: {response.status_code}: {response.text}"
                 )
-                raise ValueError(f"Token endpoint call failed")
+                raise ValueError("Token endpoint call failed")
 
             # Parse token response
             token_response: OAuthToken = OAuthToken.model_validate(response.json())

@@ -16,6 +16,7 @@
 
 import aiohttp
 import logging
+import json
 
 from fhir_mcp_server.oauth import ServerConfigs
 
@@ -26,6 +27,41 @@ from mcp.shared._httpx_utils import create_mcp_http_client
 logger: logging.Logger = logging.getLogger(__name__)
 
 
+async def on_request_start(session, trace_config_ctx, params):
+    """Log FHIR API request details."""
+    logger.info("[FHIR API REQUEST]")
+    logger.info(f"  URL: {params.url}")
+    logger.info(f"  Method: {params.method}")
+
+    headers = dict(params.headers)
+    logger.info(f"  Headers: {json.dumps(headers, indent=2)}")
+
+    if params.data:
+        try:
+            if isinstance(params.data, (dict, list)):
+                logger.info(f"  Body: {json.dumps(params.data, indent=2)}")
+            else:
+                logger.info(f"  Body: {params.data}")
+        except Exception:
+            logger.info("  Body: <binary or non-serializable data>")
+
+
+async def on_request_end(session, trace_config_ctx, params):
+    """Log FHIR API response details."""
+    logger.info("[FHIR API RESPONSE]")
+    logger.info(f"  URL: {params.url}")
+    logger.info(f"  Status: {params.response.status}")
+    logger.info(f"  Method: {params.method}")
+
+
+async def on_request_exception(session, trace_config_ctx, params):
+    """Log FHIR API request exceptions."""
+    logger.error("[FHIR API ERROR]")
+    logger.error(f"  URL: {params.url}")
+    logger.error(f"  Method: {params.method}")
+    logger.error(f"  Exception: {params.exception}")
+
+
 async def create_async_fhir_client(
     config: ServerConfigs,
     access_token: str | None = None,
@@ -33,10 +69,16 @@ async def create_async_fhir_client(
 ) -> AsyncFHIRClient:
     """Create a FHIR AsyncClient with defaults."""
 
+    trace_config = aiohttp.TraceConfig()
+    trace_config.on_request_start.append(on_request_start)
+    trace_config.on_request_end.append(on_request_end)
+    trace_config.on_request_exception.append(on_request_exception)
+
     client_kwargs: Dict = {
         "url": config.server_base_url,
         "aiohttp_config": {
             "timeout": aiohttp.ClientTimeout(total=config.mcp_request_timeout),
+            "trace_configs": [trace_config],
         },
         "extra_headers": extra_headers,
     }
@@ -111,9 +153,20 @@ async def get_capability_statement(metadata_url: str) -> Dict[str, Any]:
     Discover CapabilityStatement from server's metadata endpoint.
     """
     try:
+        headers = get_default_headers()
+
+        logger.info("[FHIR REQUEST] Fetching CapabilityStatement")
+        logger.info(f"  URL: {metadata_url}")
+        logger.info(f"  Method: GET")
+        logger.info(f"  Headers: {json.dumps(headers, indent=2)}")
         logger.debug(f"Fetching CapabilityStatement from {metadata_url}")
+
         async with create_mcp_http_client() as client:
-            response = await client.get(url=metadata_url, headers=get_default_headers())
+            response = await client.get(url=metadata_url, headers=headers)
+
+            logger.info("[FHIR RESPONSE] CapabilityStatement")
+            logger.info(f"  Status: {response.status_code}")
+
             response.raise_for_status()
             metadata_json = response.json()
             logger.debug(f"OAuth metadata discovered: {metadata_json}")
