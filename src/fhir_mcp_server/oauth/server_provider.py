@@ -207,7 +207,7 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
 
         self.token_mapping[mcp_access_token] = AccessToken(
             token=token.access_token,
-            client_id=self.configs.server_client_id,
+            client_id=client.client_id,
             scopes=token.scopes,
             expires_at=int(token.expires_at or 3600),
         )
@@ -215,9 +215,9 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
         if token.refresh_token:
             self.token_mapping[mcp_refresh_token] = RefreshToken(
                 token=token.refresh_token,
-                client_id=self.configs.server_client_id,
+                client_id=client.client_id,
                 scopes=token.scopes,
-                expires_at=int(token.expires_at or 3600),
+                expires_at=None,  # Refresh tokens don't expire (managed by FHIR server)
             )
 
         self.token_metadata_mapping[token.access_token] = token
@@ -277,7 +277,7 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
 
         refresh_token_payload: Dict = {
             "grant_type": "refresh_token",
-            "refresh_token": refresh_token,
+            "refresh_token": refresh_token.token,
             "scopes": " ".join(scopes),
         }
 
@@ -306,7 +306,7 @@ class OAuthServerProvider(OAuthAuthorizationServerProvider):
             self.token_mapping[mcp_refresh_token] = RefreshToken(
                 token=new_token.refresh_token,
                 scopes=new_token.scopes,
-                expires_at=int(new_token.expires_at or 3600),
+                expires_at=None,  # Refresh tokens don't expire (managed by FHIR server)
                 client_id=client.client_id,
             )
 
